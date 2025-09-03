@@ -252,10 +252,10 @@ body{
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0.8), var(--dj-dark), rgba(0, 0, 0, 0.8));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-radius: 18px;
-    padding: 14px;
+    border-radius: 16px;
+    padding: 12px;
     width: 70vw;
-    min-height: 45px;
+    min-height: 40px;
     box-shadow: 0 6px 30px rgba(0, 0, 0, 0.5), 0 0 10px var(--dj-accent, #00bfff);
     border: 1.5px solid rgba(0, 191, 255, 0.3);
     z-index: 100;
