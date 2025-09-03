@@ -246,8 +246,7 @@ body{
     align-items: center;
     position: fixed;
     bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    
     background: rgba(10, 10, 10, 0.9);
     background-image: linear-gradient(to right, rgba(0, 0, 0, 0.8), var(--dj-dark), rgba(0, 0, 0, 0.8));
     backdrop-filter: blur(12px);
