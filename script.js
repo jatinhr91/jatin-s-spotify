@@ -18,49 +18,92 @@ function secondsToMinutesSeconds(seconds) {
 
 // Play a track
 function playMusic(track) {
-    audio.src = `http://127.0.0.1:3000/${currFolder}/` + track;
-    audio.play();
-    playBtn.src = "pause.svg";
-    document.querySelector(".songinfo").innerHTML = decodeURI(track);
-    document.querySelector(".songtime").innerHTML = "00:00/00:00";
+    try {
+        audio.src = `${currFolder}/` + track;
+        audio.play()
+            .then(() => {
+                playBtn.src = "pause.svg";
+            })
+            .catch(error => {
+                console.error("Error playing audio:", error);
+                playBtn.src = "play.svg";
+            });
+        document.querySelector(".songinfo").innerHTML = track ? decodeURI(track) : "";
+        document.querySelector(".songtime").innerHTML = "00:00/00:00";
+    } catch (error) {
+        console.error("Error in playMusic function:", error);
+    }
 }
 
-// Load songs from a folder — do not change
+// Load songs from a folder — modified for direct loading
 async function getSongs(folder) {
     currFolder = folder;
-    let res = await fetch(`http://127.0.0.1:3000/${folder}/`);
-    let text = await res.text();
-    let div = document.createElement("div");
-    div.innerHTML = text;
-    let as = div.getElementsByTagName("a");
-
-    let folderSongs = [];
-    for (let a of as) {
-        if (a.href.endsWith(".mp3")) {
-            folderSongs.push(a.href.split(`${folder}/`)[1]);
-        }
-    }
+    try {
+        console.log(`Loading songs from ${folder}`);
+        
+        // Hardcoded song lists for each folder to avoid fetch issues
+        const songLists = {
+            "songs/Real_boss": [
+                "First Flex - PaagalWorld.Com.Se.mp3",
+                "Hathyar 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "IN MATES - PaagalWorld.Com.Se.mp3",
+                "Issue (Mudda Ishq Da) 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "Scammer - PaagalWorld.Com.Se.mp3",
+                "Stuck B 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "ZAZA - PaagalWorld.Com.Se.mp3"
+            ],
+            "songs/cheema_y": [
+                "Brush Off - PaagalWorld.Com.Se.mp3",
+                "Stag Entry 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "Takde Gharde - PaagalWorld.Com.Se.mp3",
+                "Vancouver - PaagalWorld.Com.Se.mp3"
+            ],
+            "songs/SMG_Music": [
+                "3 AM IN MUMBAI - PaagalWorld.Com.Se.mp3",
+                "Bexley .Road - PaagalWorld.Com.Se.mp3"
+            ],
+            "songs/Dhanda_Nyoliwala": [
+                "Knife Brows 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "Rubicon 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "Russian Bandana (Lo-Fi) - PaagalWorld.Com.Se.mp3"
+            ]
+        };
+        
+        // Get songs for the current folder
+        let folderSongs = songLists[folder] || [];
 
     const songUL = document.querySelector(".songList ul");
     songUL.innerHTML = "";
     for (const song of folderSongs) {
-        songUL.insertAdjacentHTML('beforeend', `
-            <li data-file="${song}">
-                <img class="invert" src="music.svg" alt="">
-                <div class="info">
-                    <div>${song.replaceAll("%20", " ")
+        if (song) {
+            let displayName = song;
+            try {
+                // Format the song name
+                if (typeof song === 'string') {
+                    displayName = song.replace(/%20/g, " ")
                         .replace(/-?\s*PaagalWorld\.Com\.Se\.mp3$/i, "")
                         .replace(/320Kbps/gi, "")
                         .replace(/\(.*?\)/g, "")
-                        .trim()}</div>
-                    <div>Jatin</div>
-                </div>
-                <div class="playnow">
-                    <span>Play Now</span>
-                    <img class="invert" src="play.svg" alt="">
-                </div>
-            </li>
-        `);
+                        .trim();
+                }
+            } catch (error) {
+                console.error("Error formatting song name:", error);
+            }
+            
+            songUL.insertAdjacentHTML('beforeend', `
+                <li data-file="${song}">
+                    <img class="invert" src="music.svg" alt="">
+                    <div class="info">
+                        <div>${displayName}</div>
+                        <div>Jatin</div>
+                    </div>
+                    <div class="playnow">
+                        <span>Play Now</span>
+                        <img class="invert" src="play.svg" alt="">
+                    </div>
+                </li>
+            `);
+        }
     }
 
     Array.from(songUL.getElementsByTagName("li")).forEach(e => {
@@ -72,6 +115,10 @@ async function getSongs(folder) {
     });
 
     return folderSongs;
+    } catch (error) {
+        console.error(`Error fetching songs from ${folder}:`, error);
+        return [];
+    }
 }
 
 // Display albums — do not change
@@ -88,7 +135,7 @@ async function displayAlbums() {
     for (const folder of folders) {
         let info = { title: folder, description: "No description available" };
         try {
-            const infoRes = await fetch(`http://127.0.0.1:3000/songs/${folder}/info.json`);
+            const infoRes = await fetch(`songs/${folder}/info.json`);
             if (infoRes.ok) info = await infoRes.json();
         } catch (err) {
             console.error(`Error loading info.json for ${folder}:`, err);
@@ -112,7 +159,7 @@ async function displayAlbums() {
                     </svg>
                 </div>
 
-                <img src="/songs/${folder}/${coverImg}" alt="${folder} cover">
+                <img src="songs/${folder}/${coverImg}" alt="${folder} cover">
 
                 <h2>${info.title}</h2>
                 <p>${info.description}</p>
@@ -125,12 +172,17 @@ async function displayAlbums() {
             const folder = event.currentTarget.dataset.folder;
             songs = await getSongs(`songs/${folder}`);
             currentIndex = 0;
-            
+            if (songs.length > 0) {
+                playMusic(songs[currentIndex]);
+            }
         });
     });
 
     songs = await getSongs("songs/Real_boss");
     currentIndex = 0;
+    if (songs.length > 0) {
+        playMusic(songs[currentIndex]);
+    }
 }
 
 // Main function — fixed event listeners
@@ -149,8 +201,14 @@ async function main() {
     // Play/Pause
     playBtn.addEventListener("click", () => {
         if (audio.paused) {
-            audio.play();
-            playBtn.src = "pause.svg";
+            if (songs.length > 0) {
+                if (!audio.src) {
+                    playMusic(songs[currentIndex]);
+                } else {
+                    audio.play();
+                    playBtn.src = "pause.svg";
+                }
+            }
         } else {
             audio.pause();
             playBtn.src = "play.svg";
