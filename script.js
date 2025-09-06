@@ -285,7 +285,48 @@ audio.addEventListener("ended", () => {
     playMusic(songs[currentIndex]);
 });
 
-    
+    const songListDiv = document.querySelector(".songList");
+    const searchInput = document.createElement("input");
+    searchInput.type = "text";
+    searchInput.placeholder = "Search songs...";
+    searchInput.style.width = "90%";
+    searchInput.style.margin = "10px";
+    searchInput.style.padding = "5px";
+    songListDiv.insertBefore(searchInput, songListDiv.firstChild);
+
+    const searchResultsUL = document.createElement("ul");
+    songListDiv.insertBefore(searchResultsUL, songListDiv.children[1]);
+
+    searchInput.addEventListener("input", () => {
+        const query = searchInput.value.toLowerCase();
+        searchResultsUL.innerHTML = "";
+        if (!query) return;
+        songs.forEach(song => {
+            const displayName = song.replace(/%20/g, " ")
+                .replace(/-?\s*PaagalWorld\.Com\.Se\.mp3$/i, "")
+                .replace(/320Kbps/gi, "")
+                .replace(/\(.*?\)/g, "")
+                .trim();
+            if (displayName.toLowerCase().includes(query)) {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <div class="info">
+                        <div>${displayName}</div>
+                        <div>Jatin</div>
+                    </div>
+                    <div class="playnow">
+                        <span>Play Now</span>
+                        <img class="invert" src="play.svg" alt="">
+                    </div>
+                `;
+                li.addEventListener("click", () => {
+                    currentIndex = songs.indexOf(song);
+                    playMusic(song);
+                });
+                searchResultsUL.appendChild(li);
+            }
+        });
+    });
 }
 
 document.addEventListener("DOMContentLoaded", main);
