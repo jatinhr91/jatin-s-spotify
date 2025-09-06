@@ -421,6 +421,75 @@ body{
     gap: 14px;
 }
 
+
+/* ---------- Dark Theme (keep current colors) ---------- */
+body.dark {
+    background-color: #121212;
+    color: #ffffff;
+}
+
+body.dark .right {
+    background-color: #2b2b2b;
+}
+
+body.dark .left {
+    background-color: #1f1f1f;
+}
+
+/* ---------- Light Theme (soft, modern colors) ---------- */
+body.light {
+    background-color: #f0f0f0; /* soft off-white background */
+    color: #1c1c1c;            /* dark text for readability */
+}
+
+body.light .right {
+    background-color: #ffffff; /* white right panel */
+    color: #1c1c1c;
+}
+
+body.light .left {
+    background-color: #ededed; /* subtle gray left panel */
+    color: #1c1c1c;
+}
+
+/* Optional: soften card backgrounds in light mode */
+body.light .card {
+    background-color: #fafafa;
+    color: #1c1c1c;
+}
+
+/* ---------- Theme Toggle Button ---------- */
+/* Style theme toggle like header buttons */
+#themeToggle {
+    background-color: #1DB954;  /* green accent for light mode */
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 10px;  /* space from login button */
+    transition: all 0.3s ease;
+}
+
+#themeToggle:hover {
+    background-color: #1ed760;
+    transform: translateY(-1px);
+}
+
+/* Dark mode button style */
+body.dark #themeToggle {
+    background-color: #ffffff;
+    color: #000000;
+}
+
+/* Smooth transitions */
+.right, .left, .container, .card, .songList, .playbar {
+    transition: background-color 0.4s, color 0.4s;
+}
+
+
 .volume {
     display: flex;
     justify-content: center;

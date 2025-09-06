@@ -327,6 +327,27 @@ audio.addEventListener("ended", () => {
             }
         });
     });
+
+    // Theme toggle button logic
+const themeToggle = document.getElementById("themeToggle");
+
+// Apply saved theme
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    themeToggle.textContent = "☀ Light Mode";
+}
+
+themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+    if (document.body.classList.contains("dark")) {
+        themeToggle.textContent = "☀ Light Mode";
+        localStorage.setItem("theme", "dark");
+    } else {
+        themeToggle.textContent = "🌙 Dark Mode";
+        localStorage.setItem("theme", "light");
+    }
+});
+
 }
 
 document.addEventListener("DOMContentLoaded", main);
