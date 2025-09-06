@@ -281,6 +281,101 @@ async function main() {
 
 document.addEventListener("DOMContentLoaded", main);
 
+// ==========================
+// Inject Signup & Login Form (localStorage auth)
+// ==========================
+
+// Create auth modal dynamically
+const authModal = document.createElement("div");
+authModal.id = "authModal";
+authModal.style.position = "fixed";
+authModal.style.top = "0";
+authModal.style.left = "0";
+authModal.style.width = "100%";
+authModal.style.height = "100%";
+authModal.style.background = "rgba(0,0,0,0.7)";
+authModal.style.display = "none";
+authModal.style.justifyContent = "center";
+authModal.style.alignItems = "center";
+authModal.style.zIndex = "1000";
+
+authModal.innerHTML = `
+  <div style="background:#222; color:#fff; padding:20px; border-radius:10px; width:300px; display:flex; flex-direction:column;">
+    <span id="closeAuth" style="align-self:flex-end; cursor:pointer;">&times;</span>
+    <h2 id="authTitle">Sign Up</h2>
+    <input type="text" id="authEmail" placeholder="Email" style="margin:5px 0; padding:8px; border-radius:5px; border:none;">
+    <input type="password" id="authPassword" placeholder="Password" style="margin:5px 0; padding:8px; border-radius:5px; border:none;">
+    <button id="authActionBtn" style="margin-top:10px; padding:8px; background:#1db954; border:none; border-radius:5px; cursor:pointer;">Submit</button>
+    <p id="authMessage"></p>
+  </div>
+`;
+document.body.appendChild(authModal);
+
+// Elements
+const signupBtn = document.querySelector(".signupbtn");
+const loginBtn = document.querySelector(".loginbtn");
+const closeAuth = document.getElementById("closeAuth");
+const authTitle = document.getElementById("authTitle");
+const authActionBtn = document.getElementById("authActionBtn");
+const authMessage = document.getElementById("authMessage");
+const authEmail = document.getElementById("authEmail");
+const authPassword = document.getElementById("authPassword");
+
+let authMode = "signup"; // default
+
+// Show modal on signup
+signupBtn.addEventListener("click", () => {
+  authMode = "signup";
+  authTitle.innerText = "Sign Up";
+  authActionBtn.innerText = "Sign Up";
+  authModal.style.display = "flex";
+});
+
+// Show modal on login
+loginBtn.addEventListener("click", () => {
+  authMode = "login";
+  authTitle.innerText = "Login";
+  authActionBtn.innerText = "Login";
+  authModal.style.display = "flex";
+});
+
+// Close modal
+closeAuth.addEventListener("click", () => {
+  authModal.style.display = "none";
+  authMessage.innerText = "";
+});
+
+// Handle submit
+authActionBtn.addEventListener("click", () => {
+  const email = authEmail.value.trim();
+  const password = authPassword.value.trim();
+
+  if (!email || !password) {
+    authMessage.innerText = "Please enter email and password.";
+    return;
+  }
+
+  let users = JSON.parse(localStorage.getItem("users")) || {};
+
+  if (authMode === "signup") {
+    if (users[email]) {
+      authMessage.innerText = "User already exists. Try login.";
+      return;
+    }
+    users[email] = { password };
+    localStorage.setItem("users", JSON.stringify(users));
+    localStorage.setItem("currentUser", email);
+    authMessage.innerText = "Signup successful! You are logged in.";
+  } else if (authMode === "login") {
+    if (users[email] && users[email].password === password) {
+      localStorage.setItem("currentUser", email);
+      authMessage.innerText = `Welcome back, ${email}!`;
+    } else {
+      authMessage.innerText = "Invalid email or password.";
+    }
+  }
+});
+
 
 
 
