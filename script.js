@@ -277,6 +277,15 @@ async function main() {
     document.querySelector(".close").addEventListener("click", () => {
         document.querySelector(".left").style.left = "-120%";
     });
+
+    // ===== Add this line here =====
+audio.addEventListener("ended", () => {
+    if (!songs.length) return;
+    currentIndex = (currentIndex + 1) % songs.length;
+    playMusic(songs[currentIndex]);
+});
+
+    
 }
 
 document.addEventListener("DOMContentLoaded", main);
