@@ -50,7 +50,10 @@ async function getSongs(folder) {
                 "Issue (Mudda Ishq Da) 320Kbps  - PaagalWorld.Com.Se.mp3",
                 "Scammer - PaagalWorld.Com.Se.mp3",
                 "Stuck B 320Kbps  - PaagalWorld.Com.Se.mp3",
-                "ZAZA - PaagalWorld.Com.Se.mp3"
+                "ZAZA - PaagalWorld.Com.Se.mp3",
+                "Wishes 320Kbps  - PaagalWorld.Com.Se.mp3",
+                "Khayaal Talwiinder 128 Kbps.mp3"
+
             ],
             "songs/cheema_y": [
                 "Brush Off - PaagalWorld.Com.Se.mp3",
